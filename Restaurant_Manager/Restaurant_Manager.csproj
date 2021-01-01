@@ -43,13 +43,17 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="ConsoleUIService.cs" />
-    <Compile Include="StockService.cs" />
-    <Compile Include="FileDatabaseService.cs" />
+    <Compile Include="Models\Orders.cs" />
+    <Compile Include="Services\OrdersService.cs" />
+    <Compile Include="Services\ConsoleUIService.cs" />
+    <Compile Include="Models\Menu.cs" />
+    <Compile Include="Services\MenuService.cs" />
+    <Compile Include="Services\StockService.cs" />
+    <Compile Include="Services\FileDatabaseService.cs" />
     <Compile Include="Constants.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Stock.cs" />
+    <Compile Include="Models\Stock.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />

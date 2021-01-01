@@ -1,12 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Restaurant_Manager
 {
-    class StockService
+    public class StockService
     {
         public List<Stock> StockList { get; set; }
 
@@ -19,17 +17,26 @@ namespace Restaurant_Manager
         {
             List<Stock> stockList = new List<Stock>();
 
-            foreach (string _stock in stock)
+            if (stock?[0] == string.Empty)
+                return stockList;
+
+            foreach (string eachStock in stock)
             {
-                string[] stockData = _stock.Split(',');
-                stockData = stockData.Where(x => !string.IsNullOrEmpty(x)).ToArray();
+                string[] stockData = eachStock.Split(',');
+                var temp = new Stock(stockData[1], stockData[2], stockData[3], stockData[4]);
+                stockList.Add(temp);
             }
-            
-            return stockList; 
+
+            return stockList;
         }
 
         public void AddStock(string name, string portionCount, string unit, string portionSize)
         {
+            if(StockList.Any(s => s.Name == name))
+            {
+                Console.WriteLine(Constants.invalidParameterMessage);
+                return;
+            }
             Stock stock = new Stock(name, portionCount, unit, portionSize);
             StockList.Add(stock);
         }
@@ -38,14 +45,11 @@ namespace Restaurant_Manager
 
         public void UpdateStock(Stock stock, string name, string portionCount, string unit, string portionSize)
         {
-            if (!(name.Equals(string.Empty)))
+            if (!(name.Equals(string.Empty)) && !(portionCount.Equals(string.Empty)) && !(unit.Equals(string.Empty)) && !(portionSize.Equals(string.Empty)))
                 stock.Name = name;
-            if (!(portionCount.Equals(string.Empty)))
-                stock.PortionCount = portionCount;
-            if (!(unit.Equals(string.Empty)))
-                stock.Unit = unit;
-            if (!(portionSize.Equals(string.Empty)))
-                stock.PortionSize = portionSize;
+            stock.PortionCount = portionCount;
+            stock.Unit = unit;
+            stock.PortionSize = portionSize;
         }
         public void UpdateStockName(Stock stock, string name)
         {
