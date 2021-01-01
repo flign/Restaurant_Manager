@@ -18,13 +18,12 @@ namespace Restaurant_Manager
             _stockService = stockService;
             _menuService = menuService;
             _ordersService = ordersService;
-    }
+        }
 
         public void PrintMessage(string message)
         {
             Console.WriteLine(message);
         }
-
         public int GetInput()
         {
             bool success = int.TryParse(Console.ReadLine(), out int input);
@@ -75,7 +74,6 @@ namespace Restaurant_Manager
                         break;
                     }
             }
-
         }
         public bool ProcessStockInput(int input)
         {
@@ -135,7 +133,6 @@ namespace Restaurant_Manager
                         PrintMessage(Constants.invalidInputMessage);
                         return true;
                     }
-
             }
         }
         public bool ProcessMenuInput(int input)
@@ -196,7 +193,6 @@ namespace Restaurant_Manager
                         PrintMessage(Constants.invalidInputMessage);
                         return true;
                     }
-
             }
         }
         public bool ProcessOrdersInput(int input)
@@ -210,7 +206,6 @@ namespace Restaurant_Manager
                         _fileDatabaseService.UpdateFile3(data);
                         string data2 = _stockService.GetStockData();
                         _fileDatabaseService.UpdateFile1(data2);
-
                         return true;
                     }
                 case 2:
@@ -245,208 +240,9 @@ namespace Restaurant_Manager
                         PrintMessage(Constants.invalidInputMessage);
                         return true;
                     }
+            }
+        }
 
-            }
-        }
-        public string DateNow()
-        {
-            return DateTime.Now.ToString("MM/dd/yyyy h:mm:ss tt");
-        }
-        public string NameInput()
-        {
-            string name = "";
-            do
-            {
-                PrintMessage(Constants.nameMessage);
-                name = Console.ReadLine();
-            } while (!IsNameValid(name));
-            return name;
-        }
-        public string PortionCountInput()
-        {
-            string portionCount = "";
-            do
-            {
-                PrintMessage(Constants.portionCountMessage);
-                portionCount = Console.ReadLine();
-            } while (!IsDecimalValue(portionCount));
-            return portionCount;
-        }
-        public string UnitInput()
-        {
-            string unit = "";
-            do
-            {
-                PrintMessage(Constants.unitMessage);
-                unit = Console.ReadLine();
-            } while (!IsNameValid(unit));
-            return unit;
-        }
-        public string PortionSizeInput()
-        {
-            string portionSize = "";
-            do
-            {
-                PrintMessage(Constants.portionSizeMessage);
-                portionSize = Console.ReadLine();
-            } while (!IsDecimalValue(portionSize));
-            return portionSize;
-        }
-        public string ProductsInput()
-        {
-            string products = "";
-            do
-            {
-                PrintMessage(Constants.productsMessage);
-                products = Console.ReadLine();
-            } while (!AreProductsValid(products));
-
-            return products;
-        }
-        public string MenuItemsInput()
-        {
-            PrintMessage(Constants.menuItemsMessage);
-            string menuItems = Console.ReadLine();
-            if (!AreMenuItemsValid(menuItems))
-                menuItems = "ERROR";
-            return menuItems;
-        }
-        public bool IsNameValid(string name)
-        {
-            if (!Regex.IsMatch(name, @"^(?! )[A-Za-z\s]*$") || _stockService.StockList.Any(stock => stock.Name == name))
-            {
-                Console.WriteLine(Constants.invalidParameterMessage);
-                return false;
-            }
-            return true;
-        }
-        public bool IsNumberValid(string number)
-        {
-            if (!Regex.IsMatch(number, @"^[0-9]+$"))
-            {
-                Console.WriteLine(Constants.invalidParameterMessage);
-                return false;
-            }
-                return true;
-        }
-        public bool AreProductsValid(string number)
-        {
-            if (!Regex.IsMatch(number, @"^[0-9 ]+$"))
-            {
-                Console.WriteLine(Constants.invalidParameterMessage);
-                return false;
-            }
-            else
-            {
-                var products = number.Split(' ');
-                if (products.Length != products.Distinct().Count())
-                {
-                    Console.WriteLine("Contains duplicates");
-                    return false;
-                }
-                foreach (var productId in products)
-                {
-                    var doesContain = _stockService.StockList.Any(stock => stock.StockId == int.Parse(productId));
-                    if (!doesContain)
-                    {
-                        Console.WriteLine(Constants.idNotFoundMessage);
-                        return false;
-                    }
-                }
-                return true;
-            }
-        }
-        public bool AreMenuItemsValid(string number)
-        {
-            if (!Regex.IsMatch(number, @"^[0-9 ]+$"))
-            {
-                Console.WriteLine(Constants.invalidParameterMessage);
-                return false;
-            }
-            else
-            {
-                var menuItems = number.Split(' ');
-
-                foreach (var menuId in menuItems)
-                {
-                    var doesContainMenuId = _menuService.MenuList.Any(menu => menu.MenuId == int.Parse(menuId));
-
-                    if (!doesContainMenuId)
-                    {
-                        PrintMessage(Constants.invalidParameterMessage);
-                        return false;
-                    }
-                    var productByMenuId = _menuService.MenuList.Find(menu => menu.MenuId == int.Parse(menuId));
-                    var product = productByMenuId.Products.Split(' ');
-                    foreach(var stockId in product)
-                    {
-                        var productByStockId = _stockService.StockList.Find(stock => stock.StockId == int.Parse(stockId));
-                        if(productByStockId == null )
-                        {
-                            PrintMessage(Constants.idNotFoundMessage);
-                            return false;
-                        }
-                        if (double.Parse(productByStockId.PortionCount) < double.Parse(productByStockId.PortionSize))
-                        {
-                            PrintMessage(Constants.notEnoughStockMessage);
-                            return false;
-                        }
-                    }
-                    foreach (var stockId in product)
-                    {
-                        var productByStockId = _stockService.StockList.Find(stock => stock.StockId == int.Parse(stockId));
-                        productByStockId.PortionCount=(double.Parse(productByStockId.PortionCount) - double.Parse(productByStockId.PortionSize)).ToString("F2");
-                    }
-                }
-                PrintMessage(Constants.successMessage);
-                return true;
-            }
-        }
-        public bool IsDecimalValue(string number)
-        {
-            if (!Regex.IsMatch(number, @"^-?([0-9]\d{0,5})([.]\d{1,2})?$"))
-            {
-                Console.WriteLine(Constants.invalidParameterMessage);
-                return false;
-            }
-            else
-                return true;
-        }
-        public void PrintAllStock(List<Stock> stock)
-        {
-            foreach (var eachStock in stock)
-            {
-                PrintMessage("");
-                PrintMessage(Constants.idMessage + eachStock.StockId);
-                PrintMessage(Constants.nameMessage + eachStock.Name);
-                PrintMessage(Constants.portionCountMessage + eachStock.PortionCount);
-                PrintMessage(Constants.unitMessage + eachStock.Unit);
-                PrintMessage(Constants.portionSizeMessage + eachStock.PortionSize);
-                PrintMessage("");
-            }
-        }
-        public void PrintAllMenu(List<Menu> menu)
-        {
-            foreach (var eachMenu in menu)
-            {
-                PrintMessage("");
-                PrintMessage(Constants.idMessage + eachMenu.MenuId);
-                PrintMessage(Constants.nameMessage + eachMenu.Name);
-                PrintMessage(Constants.productsMessage + eachMenu.Products);
-                PrintMessage("");
-            }
-        }
-        public void PrintAllOrders(List<Orders> order)
-        {
-            foreach (var eachOrder in order)
-            {
-                PrintMessage("");
-                PrintMessage(Constants.idMessage + eachOrder.OrderId);
-                PrintMessage(Constants.nameMessage + eachOrder.DateTime);
-                PrintMessage(Constants.productsMessage + eachOrder.MenuItems);
-                PrintMessage("");
-            }
-        }
         public void UpdateStock(Stock stock)
         {
             PrintMessage(Constants.stockChoiceMessage);
@@ -517,6 +313,190 @@ namespace Restaurant_Manager
                     }
             }
         }
+        public string DateNow()
+        {
+            return DateTime.Now.ToString("MM/dd/yyyy h:mm:ss tt");
+        }
+        public string NameInput()
+        {
+            string name = "";
+            do
+            {
+                PrintMessage(Constants.nameMessage);
+                name = Console.ReadLine();
+            } while (!IsNameValid(name));
+            return name;
+        }
+        public string PortionCountInput()
+        {
+            string portionCount = "";
+            do
+            {
+                PrintMessage(Constants.portionCountMessage);
+                portionCount = Console.ReadLine();
+            } while (!IsDecimalValue(portionCount));
+            return portionCount;
+        }
+        public string UnitInput()
+        {
+            string unit = "";
+            do
+            {
+                PrintMessage(Constants.unitMessage);
+                unit = Console.ReadLine();
+            } while (!IsNameValid(unit));
+            return unit;
+        }
+        public string PortionSizeInput()
+        {
+            string portionSize = "";
+            do
+            {
+                PrintMessage(Constants.portionSizeMessage);
+                portionSize = Console.ReadLine();
+            } while (!IsDecimalValue(portionSize));
+            return portionSize;
+        }
+        public string ProductsInput()
+        {
+            string products = "";
+            do
+            {
+                PrintMessage(Constants.productsMessage);
+                products = Console.ReadLine();
+            } while (!AreProductsValid(products));
+            return products;
+        }
+        public string MenuItemsInput()
+        {
+            PrintMessage(Constants.menuItemsMessage);
+            string menuItems = Console.ReadLine();
+            if (!AreMenuItemsValid(menuItems))
+                menuItems = "ERROR";
+            return menuItems;
+        }
+        public bool IsNameValid(string name)
+        {
+            if (!Regex.IsMatch(name, @"^(?! )[A-Za-z\s]*$") || _stockService.StockList.Any(stock => stock.Name == name))
+            {
+                PrintMessage(Constants.invalidParameterMessage);
+                return false;
+            }
+            return true;
+        }
+        public bool IsNumberValid(string number)
+        {
+            if (!Regex.IsMatch(number, @"^[0-9]+$"))
+            {
+                PrintMessage(Constants.invalidParameterMessage);
+                return false;
+            }
+            return true;
+        }
+        public bool AreProductsValid(string number)
+        {
+            if (!Regex.IsMatch(number, @"^[0-9 ]+$"))
+            {
+                PrintMessage(Constants.invalidParameterMessage);
+                return false;
+            }
+            var products = number.Split(' ');
+            if (products.Length != products.Distinct().Count())
+            {
+                PrintMessage(Constants.containsDuplicates);
+                return false;
+            }
+            foreach (var productId in products)
+            {
+                var doesContain = _stockService.StockList.Any(stock => stock.StockId == int.Parse(productId));
+                if (!doesContain)
+                {
+                    PrintMessage(Constants.idNotFoundMessage);
+                    return false;
+                }
+            }
+            return true;
+        }
+        public bool AreMenuItemsValid(string number)
+        {
+            if (!Regex.IsMatch(number, @"^[0-9 ]+$"))
+            {
+                PrintMessage(Constants.invalidParameterMessage);
+                return false;
+            }
+            var menuItems = number.Split(' ');
 
+            foreach (var menuId in menuItems)
+            {
+                var doesContainMenuId = _menuService.MenuList.Any(menu => menu.MenuId == int.Parse(menuId));
+
+                if (!doesContainMenuId)
+                {
+                    PrintMessage(Constants.invalidParameterMessage);
+                    return false;
+                }
+                var productByMenuId = _menuService.MenuList.Find(menu => menu.MenuId == int.Parse(menuId));
+                var product = productByMenuId.Products.Split(' ');
+                foreach (var stockId in product)
+                {
+                    var productByStockId = _stockService.StockList.Find(stock => stock.StockId == int.Parse(stockId));
+                    if (productByStockId == null)
+                    {
+                        PrintMessage(Constants.idNotFoundMessage);
+                        return false;
+                    }
+                    if (double.Parse(productByStockId.PortionCount) < double.Parse(productByStockId.PortionSize))
+                    {
+                        PrintMessage(Constants.notEnoughStockMessage);
+                        return false;
+                    }
+                }
+                foreach (var stockId in product)
+                {
+                    var productByStockId = _stockService.StockList.Find(stock => stock.StockId == int.Parse(stockId));
+                    productByStockId.PortionCount = (double.Parse(productByStockId.PortionCount) - double.Parse(productByStockId.PortionSize)).ToString("F2");
+                }
+            }
+            PrintMessage(Constants.successMessage);
+            return true;
+        }
+        public bool IsDecimalValue(string number)
+        {
+            if (!Regex.IsMatch(number, @"^-?([0-9]\d{0,5})([.]\d{1,2})?$"))
+            {
+                Console.WriteLine(Constants.invalidParameterMessage);
+                return false;
+            }
+            return true;
+        }
+        public void PrintAllStock(List<Stock> stock)
+        {
+            foreach (var eachStock in stock)
+            {
+                PrintMessage("\n" + Constants.idMessage + eachStock.StockId);
+                PrintMessage(Constants.nameMessage + eachStock.Name);
+                PrintMessage(Constants.portionCountMessage + eachStock.PortionCount);
+                PrintMessage(Constants.unitMessage + eachStock.Unit);
+                PrintMessage(Constants.portionSizeMessage + eachStock.PortionSize + "\n");
+            }
+        }
+        public void PrintAllMenu(List<Menu> menu)
+        {
+            foreach (var eachMenu in menu)
+            {
+                PrintMessage("\n" + Constants.idMessage + eachMenu.MenuId);
+                PrintMessage(Constants.nameMessage + eachMenu.Name);
+                PrintMessage(Constants.productsMessage + eachMenu.Products + "\n");
+            }
+        }
+        public void PrintAllOrders(List<Orders> order)
+        {
+            foreach (var eachOrder in order)
+            {
+                PrintMessage("\n" + Constants.idMessage + eachOrder.OrderId);
+                PrintMessage(Constants.nameMessage + eachOrder.DateTime);
+                PrintMessage(Constants.productsMessage + eachOrder.MenuItems + "\n");
+            }
+        }
     }
 }

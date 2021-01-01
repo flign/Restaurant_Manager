@@ -63,11 +63,6 @@ namespace Restaurant_Manager
         {
             MenuList.Remove(menu);
         }
-
-        public bool IsMenuListEmpty() => MenuList.DefaultIfEmpty() == null ? true : false;
-
-        public bool IsNameUnique(List<string> names, string name) => names.FindIndex(c => c.Contains(name)) >= 0 ? false : true;
-
         public string GetMenuData()
         {
             string menuData = string.Empty;

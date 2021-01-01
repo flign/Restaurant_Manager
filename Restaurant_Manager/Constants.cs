@@ -27,6 +27,7 @@
         public static string portionSizeMessage = "Portion size: ";
         public static string productsMessage = "Products: ";
         public static string menuItemsMessage = "Menu items: ";
+        public static string containsDuplicates = "Contains duplicates";
         public static string notEnoughStockMessage = "Not enough stock, order declined";
     }
 }

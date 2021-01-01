@@ -45,8 +45,6 @@ namespace Restaurant_Manager
             OrdersList.Remove(order);
         }
 
-        public bool IsOrderListEmpty() => OrdersList.DefaultIfEmpty() == null ? true : false;
-
         public string GetOrdersData()
         {
             string orderData = string.Empty;
@@ -55,7 +53,6 @@ namespace Restaurant_Manager
             {
                 orderData += string.Format($"{order.OrderId},{order.DateTime},{order.MenuItems}\n");
             }
-
             return orderData;
         }
     }
