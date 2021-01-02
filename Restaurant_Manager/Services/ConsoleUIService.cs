@@ -50,7 +50,7 @@ namespace Restaurant_Manager
                         Console.Clear();
                         do
                         {
-                            PrintMessage(Constants.restaurantMenuMessage);
+                            PrintMessage(Constants.menuMessage);
                         } while (ProcessMenuInput(GetInput()));
                         break;
                     }
@@ -215,7 +215,7 @@ namespace Restaurant_Manager
                     }
                 case 3:
                     {
-                        PrintMessage(Constants.menuDeleteMessage);
+                        PrintMessage(Constants.orderDeleteMessage);
                         string orderIdString = Console.ReadLine();
                         int value;
                         if (int.TryParse(orderIdString, out value))
