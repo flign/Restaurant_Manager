@@ -28,5 +28,6 @@ namespace Restaurant_Manager.Tests
             List<Stock> stockData = stockService.ParseStock(stock);
             Assert.AreEqual(stockData,stockData);
         }
+        //I TRIED...
     }
 }
