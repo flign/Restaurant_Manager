@@ -528,9 +528,5 @@ namespace Restaurant_Manager
                 PrintMessage(Constants.menuItemsMessage + eachOrder.MenuItems + "\n");
             }
         }
-        public void ProceedIfInputFormatValid()
-        {
-
-        }
     }
 }
