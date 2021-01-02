@@ -78,10 +78,6 @@ namespace Restaurant_Manager
             StockList.Remove(stock);
         }
 
-        public bool IsStockListEmpty() => StockList.DefaultIfEmpty() == null ? true : false;
-
-        public bool IsNameUnique(List<string> names, string name) => names.FindIndex(c => c.Contains(name)) >= 0 ? false : true;
-
         public string GetStockData()
         {
             string stockData = string.Empty;

@@ -90,21 +90,22 @@ namespace Restaurant_Manager
                 case 2:
                     {
                         PrintMessage(Constants.stockUpdateMessage);
-                        int stockId = int.Parse(Console.ReadLine());
+
+                        int stockId = GetInput();
                         Stock stock = _stockService.GetStockById(stockId);
                         if (stock == null)
-                            PrintMessage(Constants.idNotFoundMessage);
-                        else
                         {
-                            UpdateStock(stock);
-                            PrintMessage(Constants.successMessage);
+                            PrintMessage(Constants.idNotFoundMessage);
+                            return true;
                         }
+                        else
+                            UpdateStock(stock);
                         return true;
                     }
                 case 3:
                     {
                         PrintMessage(Constants.stockDeleteMessage);
-                        int stockId = int.Parse(Console.ReadLine());
+                        int stockId = GetInput();
                         Stock stock = _stockService.GetStockById(stockId);
                         if (stock == null)
                             PrintMessage(Constants.idNotFoundMessage);
@@ -150,21 +151,18 @@ namespace Restaurant_Manager
                 case 2:
                     {
                         PrintMessage(Constants.menuUpdateMessage);
-                        int menuId = int.Parse(Console.ReadLine());
+                        int menuId = GetInput();
                         Menu menu = _menuService.GetMenuById(menuId);
                         if (menu == null)
                             PrintMessage(Constants.idNotFoundMessage);
                         else
-                        {
                             UpdateMenu(menu);
-                            PrintMessage(Constants.successMessage);
-                        }
                         return true;
                     }
                 case 3:
                     {
                         PrintMessage(Constants.menuDeleteMessage);
-                        int menuId = int.Parse(Console.ReadLine());
+                        int menuId = GetInput();
                         Menu menu = _menuService.GetMenuById(menuId);
                         if (menu == null)
                             PrintMessage(Constants.idNotFoundMessage);
@@ -176,6 +174,7 @@ namespace Restaurant_Manager
                             PrintMessage(Constants.successMessage);
                         }
                         return true;
+
                     }
                 case 4:
                     {
@@ -217,17 +216,23 @@ namespace Restaurant_Manager
                 case 3:
                     {
                         PrintMessage(Constants.menuDeleteMessage);
-                        int orderId = int.Parse(Console.ReadLine());
-                        Orders order = _ordersService.GetOrderById(orderId);
-                        if (order == null)
-                            PrintMessage(Constants.idNotFoundMessage);
-                        else
+                        string orderIdString = Console.ReadLine();
+                        int value;
+                        if (int.TryParse(orderIdString, out value))
                         {
-                            _ordersService.DeleteOrder(order);
-                            string data = _ordersService.GetOrdersData();
-                            _fileDatabaseService.UpdateFile3(data);
-                            PrintMessage(Constants.successMessage);
+                            int orderId = int.Parse(orderIdString);
+                            Orders order = _ordersService.GetOrderById(orderId);
+                            if (order == null)
+                                PrintMessage(Constants.idNotFoundMessage);
+                            else
+                            {
+                                _ordersService.DeleteOrder(order);
+                                string data = _ordersService.GetOrdersData();
+                                _fileDatabaseService.UpdateFile3(data);
+                                PrintMessage(Constants.successMessage);
+                            }
                         }
+                        PrintMessage(Constants.invalidInputMessage);
                         return true;
                     }
                 case 4:
@@ -253,6 +258,7 @@ namespace Restaurant_Manager
                         _stockService.UpdateStockName(stock, NameInput());
                         string data = _stockService.GetStockData();
                         _fileDatabaseService.UpdateFile1(data);
+                        PrintMessage(Constants.successMessage);
                         break;
                     }
                 case 2:
@@ -260,6 +266,7 @@ namespace Restaurant_Manager
                         _stockService.UpdateStockPortionCount(stock, PortionCountInput());
                         string data = _stockService.GetStockData();
                         _fileDatabaseService.UpdateFile1(data);
+                        PrintMessage(Constants.successMessage);
                         break;
                     }
                 case 3:
@@ -267,6 +274,7 @@ namespace Restaurant_Manager
                         _stockService.UpdateStockUnit(stock, UnitInput());
                         string data = _stockService.GetStockData();
                         _fileDatabaseService.UpdateFile1(data);
+                        PrintMessage(Constants.successMessage);
                         break;
                     }
                 case 4:
@@ -274,6 +282,7 @@ namespace Restaurant_Manager
                         _stockService.UpdateStockPortionSize(stock, PortionSizeInput());
                         string data = _stockService.GetStockData();
                         _fileDatabaseService.UpdateFile1(data);
+                        PrintMessage(Constants.successMessage);
                         break;
                     }
                 case 5:
@@ -281,8 +290,15 @@ namespace Restaurant_Manager
                         _stockService.UpdateStock(stock, NameInput(), PortionCountInput(), UnitInput(), PortionSizeInput());
                         string data = _stockService.GetStockData();
                         _fileDatabaseService.UpdateFile1(data);
+                        PrintMessage(Constants.successMessage);
                         break;
                     }
+                case 6:
+                        break;
+                default:
+                        PrintMessage(Constants.invalidInputMessage);
+                        UpdateStock(stock);
+                        break;
             }
         }
         public void UpdateMenu(Menu menu)
@@ -295,6 +311,7 @@ namespace Restaurant_Manager
                         _menuService.UpdateMenuName(menu, NameInput());
                         string data = _menuService.GetMenuData();
                         _fileDatabaseService.UpdateFile2(data);
+                        PrintMessage(Constants.successMessage);
                         break;
                     }
                 case 2:
@@ -302,6 +319,7 @@ namespace Restaurant_Manager
                         _menuService.UpdateProducts(menu, ProductsInput());
                         string data = _menuService.GetMenuData();
                         _fileDatabaseService.UpdateFile2(data);
+                        PrintMessage(Constants.successMessage);
                         break;
                     }
                 case 3:
@@ -309,8 +327,15 @@ namespace Restaurant_Manager
                         _menuService.UpdateMenu(menu, NameInput(), ProductsInput());
                         string data = _menuService.GetMenuData();
                         _fileDatabaseService.UpdateFile2(data);
+                        PrintMessage(Constants.successMessage);
                         break;
                     }
+                case 4:
+                        break;
+                default:
+                    PrintMessage(Constants.invalidInputMessage);
+                    UpdateMenu(menu);
+                    break;
             }
         }
         public string DateNow()
@@ -377,9 +402,14 @@ namespace Restaurant_Manager
         }
         public bool IsNameValid(string name)
         {
-            if (!Regex.IsMatch(name, @"^(?! )[A-Za-z\s]*$") || _stockService.StockList.Any(stock => stock.Name == name))
+            if (!Regex.IsMatch(name, @"^(?!\s)[A-Za-z\s]+$"))
             {
                 PrintMessage(Constants.invalidParameterMessage);
+                return false;
+            }
+            if (_stockService.StockList.Any(stock => stock.Name == name))
+            {
+                PrintMessage(Constants.duplicateNameMessage);
                 return false;
             }
             return true;
@@ -495,8 +525,12 @@ namespace Restaurant_Manager
             {
                 PrintMessage("\n" + Constants.idMessage + eachOrder.OrderId);
                 PrintMessage(Constants.nameMessage + eachOrder.DateTime);
-                PrintMessage(Constants.productsMessage + eachOrder.MenuItems + "\n");
+                PrintMessage(Constants.menuItemsMessage + eachOrder.MenuItems + "\n");
             }
+        }
+        public void ProceedIfInputFormatValid()
+        {
+
         }
     }
 }

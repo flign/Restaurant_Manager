@@ -6,7 +6,7 @@ namespace Restaurant_Manager
     public class Stock
     {
         private static int stockId;
-        public int StockId { get; private set; }
+        public int StockId { get; protected internal set; }
         public string Name { get; set; }
         public string PortionCount { get; set; }
         public string Unit { get; set; }

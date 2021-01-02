@@ -10,10 +10,10 @@
         public static string stockUpdateMessage = "\nWhich stock (Id) would you like to update?";
         public static string ordersMenuMessage = "\nWhat would you like to do?\n[1] Create new order\n[2] View all orders \n[3] Delete order\n[4] Return to main menu";
         public static string menuUpdateMessage = "\nWhich menu item (Id) would you like to update?";
-        public static string stockChoiceMessage = "\nWhat would you like to update?\n[1] Name\n[2] Portion Count\n[3] Unit\n[4] Portion Size\n[5] Everything";
-        public static string menuChoiceMessage = "\nWhat would you like to update?\n[1] Name\n[2] Products\n[3] Everything";
+        public static string stockChoiceMessage = "\nWhat would you like to update?\n[1] Name\n[2] Portion Count\n[3] Unit\n[4] Portion Size\n[5] Everything\n[6] Return";
+        public static string menuChoiceMessage = "\nWhat would you like to update?\n[1] Name\n[2] Products\n[3] Everything\n[4] Return";
         public static string stockDeleteMessage = "\nWhich stock (Id) would you like to delete?";
-        public static string duplicateNameMessage = "\nStock name already exists.";
+        public static string duplicateNameMessage = "\nName already exists.";
         public static string restaurantMenuMessage = "\nWhat would you like to do?\n[1] Add new items to menu\n[2] Update menu \n[3] Delete menu item\n[4] View all menu\n[5] Return to main menu";
         public static string menuDeleteMessage = "\nWhich menu item (Id) would you like to delete?";
         public static string invalidParameterMessage = "Entered parameters are invalid!";
